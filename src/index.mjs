@@ -78,10 +78,14 @@ app.post(
             .withMessage("Username must be between 5-32 characters")
             .isString()
             .withMessage("Username must be a string"),
+        body("displayName").notEmpty(),
     ],
     (request, response) => {
     const result = validationResult(request);
     console.log(result);
+    if(!result.isEmpty())
+        return response.status(400).send({ errors: result.array()});
+    
     const{body} = request;
     const newUser = {id: mockUsers[mockUsers.length-1].id + 1, ...body};
         mockUsers.push(newUser);
