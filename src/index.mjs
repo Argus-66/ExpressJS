@@ -1,14 +1,20 @@
 import express from 'express';
-import { query, 
+import { 
+    query, 
     validationResult,
     body, 
     matchedData, 
-    checkSchema, } from "express-validator";
+    checkSchema, 
+} from "express-validator";
 import { createUserValidationSchema } from './utils/validationSchemas.mjs';
+import usersRouter from './routes/users.mjs';
+import { mockUsers } from './utils/constants.mjs';
+
 
 const app = express();
 
 app.use(express.json())
+app.use(usersRouter);
 
 const loggingMiddleware = (request, response, next) => {
     console.log(`${request.method} - ${request.url}`);
@@ -30,46 +36,13 @@ const resolveIndexByUserId = (request, response, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-const mockUsers= [
-    { id: 1, username: "ayush", displayName: "Ayush" },
-    { id: 2, username: "subham", displayName: "Subham" },
-    { id: 3, username: "kishore", displayName: "Kishore" },
-    { id: 4, username: "ramesh", displayName: "Ramesh"  },
-    { id: 5, username: "rahul", displayName: "Rahul" },
-    { id: 6, username: "suma", displayName: "Suma" },
-    { id: 7, username: "prakash", displayName: "Prakash" },
-    { id: 8, username: "anil", displayName: "Anil" },
-    { id: 9, username: "suresh", displayName: "Suresh" },
-    { id: 10, username: "mukesh", displayName: "Mukesh" }
-];
 
-app.get(
-    "/", (request, response) => {
+
+app.get("/", (request, response) => {
     response.status(201).send({msg: "Hello, World!"});
 });
 
-app.get('/api/users',
-    query('filter')
-    .isString()
-    .notEmpty()
-    .withMessage("Must not be empty")
-    .isLength({ min: 3, max: 10 })
-    .withMessage("Invalid filter, must be between 3-10 characters"),
-    (request, response) => {
-    const result = validationResult(request);
-    console.log(result);
-    const {
-        query : {filter, value},
-    } = request;
-    //When filter and values are not provided, return all users
-    if(!filter &&!value) return response.send(mockUsers);
-    console.log(value);
-    if(filter && value) 
-        return response.send(
-            mockUsers.filter((user) => user[filter].includes(value))
-    );
-    return response.status(201).send(mockUsers);
-});
+
 
 
 app.post("/api/users", 
