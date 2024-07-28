@@ -3,6 +3,7 @@ import routes from "./routes/index.mjs";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
+import "./strategies/local-strategy.mjs";
 
 const app = express();
 
@@ -23,6 +24,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(routes);
+
+app.post("/api/auth", passport.authenticate("local"), (request, response) => {
+    response.sendStatus(200);
+});
+
+app.get("/api/auth/status", (request, response) => {
+    console.log(`Inside /auth/status enpoint`);
+    console.log(request.user);
+    console.log(request.session)
+    return request.user ? response.send(request.user) : response.sendStatus(401);
+});
 
 const PORT = process.env.PORT || 3000;
 
