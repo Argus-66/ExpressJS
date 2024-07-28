@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { query, validationResult, checkSchema, matchedData } from "express-validator";
+import { 
+    query, 
+    validationResult, 
+    checkSchema, 
+    matchedData 
+} from "express-validator";
 import { mockUsers } from '../utils/constants.mjs';
 import { createUserValidationSchema } from '../utils/validationSchemas.mjs';
 import { resolveIndexByUserId } from "../utils/middlewares.mjs";
@@ -42,18 +47,26 @@ router.get(
     }
 );
 
-router.post("/api/users", async (request, response) => {
-    const { body } = request;
-    const newUser = new User(body);
-    try{
-        const savedUser = await newUser.save();
-        return response.status(201).send(savedUser);
-    } catch (err){
-        console.log(err);
-        return response.sendStatus(400);
+router.post("/api/users", 
+    checkSchema(createUserValidationSchema), 
+    async (request, response) => {
+        const result = validationResult(request);
+
+        if(!result.isEmpty()) return response.status(400).send(result.array());
+
+        const data = matchedData(request);
+
+        console.log(data);
+        const newUser = new User(data);
+        try{
+            const savedUser = await newUser.save();
+            return response.status(201).send(savedUser);
+        } catch (err){
+            console.log(err);
+            return response.sendStatus(400);
+        }
     }
-     
-});
+);
 
 //PUT --------------------------------------------
 router.put('/api/users/:id', resolveIndexByUserId, (request, response) => {
