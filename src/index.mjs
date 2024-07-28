@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
 import mongoose from "mongoose";
-import MongoStore from "connect-mongo";
+import MongoStore from "connect-mongo"; //npm i connect-mongo
 import "./strategies/local-strategy.mjs";
 
 const app = express();
@@ -20,13 +20,13 @@ app.use(cookieParser("helloworld"));
 app.use(
   session({
     secret: "ayush the dev",
-    saveUninitialized: false,
-    resave: false,
+    saveUninitialized: false, //If session is new and unmodified, it is saved to the store, if value is True will save dor every even if not modified(too much storage consumption)
+    resave: false, // if true forces cookie to be sent back to the client(cookie to save everytime in database...)
     cookie: {
       maxAge: 60000 * 60,
     },
-    store: MongoStore.create({
-      client: mongoose.connection.getClient(),
+    store: MongoStore.create({                  // connect-mongo options
+      client: mongoose.connection.getClient(), //mongoDB client connection
     }),
   })
 );
@@ -43,7 +43,8 @@ app.post("/api/auth", passport.authenticate("local"), (request, response) => {
 app.get("/api/auth/status", (request, response) => {
     console.log(`Inside /auth/status enpoint`);
     console.log(request.user);
-    console.log(request.session)
+    console.log(request.session)  // Check session data
+    console.log(request.session.id); // Get session ID
     return request.user ? response.send(request.user) : response.sendStatus(401);
 });
 
