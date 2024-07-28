@@ -29,15 +29,16 @@ router.get(
                 console.log(err);
                 throw err;
             }
+            console.log("Inside Session Store Get");
             console.log(sessionData);
-        })
+        });
         const result = validationResult(request);
-        console.log(result);
         const {
             query : {filter, value},
         } = request;
         //When filter and values are not provided, return all users
-        if(!filter &&!value) return response.send(mockUsers);
+        if(!filter &&!value) 
+            return response.send(mockUsers);
         console.log(value);
         if(filter && value) 
             return response.send(
