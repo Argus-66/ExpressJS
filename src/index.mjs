@@ -8,7 +8,9 @@ import "./strategies/local-strategy.mjs";
 
 const app = express();
 
-mongoose.connect("mongodb://localhost:27017/express_tutorial")
+//npm i mongoose
+mongoose
+.connect("mongodb://localhost/express_tutorial")
 .then (() => console.log("Connected to MongoDB"))
 .catch((err) => console.log(`Error: ${err}`));
 
