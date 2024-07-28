@@ -36,6 +36,14 @@ app.get("/api/auth/status", (request, response) => {
     return request.user ? response.send(request.user) : response.sendStatus(401);
 });
 
+app.post("/api/auth/logout", (request, response) => {
+    if (!request.user) return response.sendStatus(401);
+    request.logout((err) => {
+        if (err) return response.sendStatus(400);
+        response.send(200);
+    });
+})
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
