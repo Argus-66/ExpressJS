@@ -2,6 +2,7 @@ import express from 'express';
 import routes from './routes/index.mjs';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { mockUsers } from './utils/constants.mjs';
 
 const app = express();
 
@@ -31,4 +32,16 @@ app.get("/", (request, response) => {
     request.session.visited = true;
     response.cookie("hello","world", { maxAge: 30000, signed: true });
     response.status(201).send({msg: "Hello, World!"});
+});
+
+app.post('/api/auth', (request, response) => {
+    const { 
+        body: { username, password },
+    } = request;
+    const findUser = mockUsers.find((user) => user.username === username);
+    if (!findUser || findUser.password !==password) 
+        return response.status(401).send({ msg: "Invalid credentials" });
+
+    request.session.user = findUser;
+    return response.Status(200).send(findUser);
 });
