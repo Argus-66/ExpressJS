@@ -27,7 +27,8 @@ app.listen(PORT, () => {
 
 app.get("/", (request, response) => {
     console.log(request.session);
-    console.log(request.session.id); //or .sessionID
+    console.log(request.session.id);
+    request.session.visited = true;
     response.cookie("hello","world", { maxAge: 30000, signed: true });
     response.status(201).send({msg: "Hello, World!"});
 });
