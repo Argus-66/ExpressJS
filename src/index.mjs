@@ -43,5 +43,10 @@ app.post('/api/auth', (request, response) => {
         return response.status(401).send({ msg: "Invalid credentials" });
 
     request.session.user = findUser;
-    return response.Status(200).send(findUser);
+    return response.status(200).send(findUser);
+});
+
+app.get('/api/auth/status', (request, response) => {
+    return request.session.user ? response.status(200).send(request.session.user): response.status(401).send({ msg: "Unauthorized" });
+
 });
