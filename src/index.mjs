@@ -5,7 +5,7 @@ import session from "express-session";
 import passport from "passport";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo"; //npm i connect-mongo
-import "./strategies/local-strategy.mjs";
+//import "./strategies/local-strategy.mjs";
 
 const app = express();
 
@@ -107,3 +107,9 @@ app.get("/api/cart", (request, response) => {
   if (!request.session.user) return response.sendStatus(401);
   return response.send(request.session.cart ?? []);
 });
+
+
+
+// client secret = b_0jNt6W2YDc0L5pIttqhMe-cdW0OmqX
+// client id = 1267446858251243620
+// redirect_url = http://localhost:3000/api/auth/discord/redirect
