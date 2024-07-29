@@ -6,14 +6,15 @@ import passport from "passport";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo"; //npm i connect-mongo
 //import "./strategies/local-strategy.mjs";
+import "./strategies/discord-strategy.mjs";
 
 const app = express();
 
 //npm i mongoose
 mongoose
-.connect("mongodb://localhost/express_tutorial")
-.then (() => console.log("Connected to MongoDB"))
-.catch((err) => console.log(`Error: ${err}`));
+  .connect("mongodb://localhost/express_tutorial")
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.log(`Error: ${err}`));
 
 app.use(express.json());
 app.use(cookieParser("helloworld"));
@@ -25,7 +26,8 @@ app.use(
     cookie: {
       maxAge: 60000 * 60,
     },
-    store: MongoStore.create({                  // connect-mongo options
+    store: MongoStore.create({
+      // connect-mongo options
       client: mongoose.connection.getClient(), //mongoDB client connection
     }),
   })
@@ -37,24 +39,27 @@ app.use(passport.session());
 app.use(routes);
 
 app.post("/api/auth", passport.authenticate("local"), (request, response) => {
-    response.sendStatus(200);
+  response.sendStatus(200);
 });
 
 app.get("/api/auth/status", (request, response) => {
-    console.log(`Inside /auth/status enpoint`);
-    console.log(request.user);
-    console.log(request.session)  // Check session data
-    console.log(request.session.id); // Get session ID
-    return request.user ? response.send(request.user) : response.sendStatus(401);
+  console.log(`Inside /auth/status enpoint`);
+  console.log(request.user);
+  console.log(request.session); // Check session data
+  console.log(request.session.id); // Get session ID
+  return request.user ? response.send(request.user) : response.sendStatus(401);
 });
 
 app.post("/api/auth/logout", (request, response) => {
-    if (!request.user) return response.sendStatus(401);
-    request.logout((err) => {
-        if (err) return response.sendStatus(400);
-        response.send(200);
-    });
-})
+  if (!request.user) return response.sendStatus(401);
+  request.logout((err) => {
+    if (err) return response.sendStatus(400);
+    response.send(200);
+  });
+});
+
+app.get('/api/auth/discord', passport.authenticate('discord'))
+
 
 const PORT = process.env.PORT || 3000;
 
@@ -107,8 +112,6 @@ app.get("/api/cart", (request, response) => {
   if (!request.session.user) return response.sendStatus(401);
   return response.send(request.session.cart ?? []);
 });
-
-
 
 // client secret = b_0jNt6W2YDc0L5pIttqhMe-cdW0OmqX
 // client id = 1267446858251243620
