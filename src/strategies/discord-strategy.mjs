@@ -7,7 +7,7 @@ export default passport.use(
       clientID: "1267446858251243620",
       clientSecret: "b_0jNt6W2YDc0L5pIttqhMe-cdW0OmqX",
       callbackURL: "http://localhost:3000/api/auth/discord/redirect",
-      scope: ["identify", "guilds"],
+      scope: ["identify"],
     },
     (accessToken, refreshToken, profile, done) => {
       console.log(profile);
